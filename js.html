@@ -1,50 +1,82 @@
 <script>
-    function addContactTable(){
+    function addContactTable() {
 
         let table = document.getElementById('contact-table');
-        if(table){
+        if (table) {
             table.remove();
         }
 
-        google.script.run.withSuccessHandler( 
-            function(obj){
+        google.script.run
+        .withSuccessHandler(
+            createTable
+        )
+        .withFailureHandler(
 
-
-                table = document.createElement('table');
-                table.id = 'contact-table';
-
-                let tableHeader = document.createElement('thead');
-                let tableBody = document.createElement('tbody');
-
-                Array.from(obj).forEach((actualRow, i) => {
-
-                    let row = document.createElement('tr');
-
-                    actualRow.forEach(actualCell => {
-
-                        let cell = document.createElement('td');
-                        cell.textContent=actualCell;
-                        row.appendChild(cell);
-
-                    });
-                    if(i==0){
-                        tableHeader.appendChild(row);
-                        table.appendChild(tableHeader);
-                    }else{
-                        tableBody.appendChild(row);
-                    }  
-                });
-
-                // Agregar clase a la cabecera
-                tableHeader.classList.add('table-dark');
-                // Agregar el cuerpo a la tabla
-                table.appendChild(tableBody);
-                // Agregar clases a la tabla
-                table.classList.add('table','table-striped','border','border-3');
-                // Agregar Tabla a la página
-                document.getElementById('contacts-container').appendChild(table);
-
-            }
         ).getContacts();
+    }
+
+    function createTable(obj) {
+
+
+        table = document.createElement('table');
+        table.id = 'contact-table';
+
+        let tableHeader = document.createElement('thead');
+        let tableBody = document.createElement('tbody');
+
+        Array.from(obj).forEach((actualRow, i) => {
+
+            let row = document.createElement('tr');
+
+            actualRow.forEach(actualCell => {
+
+                let cell = document.createElement('td');
+                cell.textContent = actualCell;
+                row.appendChild(cell);
+
+            });
+            if (i == 0) {
+                tableHeader.appendChild(row);
+                table.appendChild(tableHeader);
+            } else {
+                tableBody.appendChild(row);
+            }
+        });
+
+        // Agregar clase a la cabecera
+        tableHeader.classList.add('table-dark');
+        // Agregar el cuerpo a la tabla
+        table.appendChild(tableBody);
+        // Agregar clases a la tabla
+        table.classList.add('table', 'table-striped', 'border', 'border-3');
+        // Agregar Tabla a la página
+        document.getElementById('contacts-container').appendChild(table);
+
+        // Mostrar Notificación de OK
+        notificationHandler(1,'Contactos Obtenidos Correctamente', 'Éxito');
+    }
+
+    function tableError(){
+        //Mostrar Notificación de Error
+    }
+
+    function notificationHandler(type, message, title){
+        // Obtener los datos de la notificación
+        let notificationText = document.getElementById('notificationText');
+        let notificationTitle = document.getElementById('notificationTitle');
+        let notificationElement = document.getElementById('notification');
+        let notificationIcon = document.getElementById('notificationIcon');
+
+        let notification = bootstrap.Toast.getOrCreateInstance(notificationElement);
+
+        // Editar la notificacion
+        notificationIcon.className = '';
+        notificationIcon.classList.add('bi','bi-check2-square');
+        notificationText.textContent = message;
+        notificationTitle.textContent = title;
+        notificationElement.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--color-dark-green');
+
+        // Mostrar notificación
+        notification.show();
     }
 </script>
