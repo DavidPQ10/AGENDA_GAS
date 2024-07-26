@@ -1,3 +1,50 @@
 <script>
-    
+    function addContactTable(){
+
+        let table = document.getElementById('contact-table');
+        if(table){
+            table.remove();
+        }
+
+        google.script.run.withSuccessHandler( 
+            function(obj){
+
+
+                table = document.createElement('table');
+                table.id = 'contact-table';
+
+                let tableHeader = document.createElement('thead');
+                let tableBody = document.createElement('tbody');
+
+                Array.from(obj).forEach((actualRow, i) => {
+
+                    let row = document.createElement('tr');
+
+                    actualRow.forEach(actualCell => {
+
+                        let cell = document.createElement('td');
+                        cell.textContent=actualCell;
+                        row.appendChild(cell);
+
+                    });
+                    if(i==0){
+                        tableHeader.appendChild(row);
+                        table.appendChild(tableHeader);
+                    }else{
+                        tableBody.appendChild(row);
+                    }  
+                });
+
+                // Agregar clase a la cabecera
+                tableHeader.classList.add('table-dark');
+                // Agregar el cuerpo a la tabla
+                table.appendChild(tableBody);
+                // Agregar clases a la tabla
+                table.classList.add('table','table-striped','border','border-3');
+                // Agregar Tabla a la página
+                document.getElementById('contacts-container').appendChild(table);
+
+            }
+        ).getContacts();
+    }
 </script>
